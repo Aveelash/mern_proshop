@@ -190,7 +190,7 @@ const ProductScreen = () => {
                         <Form.Control
                           as="select"
                           value={rating}
-                          onChange={(e) => setRating(e.target.value)}
+                          onChange={(e) => setRating(Number(e.target.value))}
                         >
                           <option value="">Select...</option>
                           <option value="1">1 - Poor</option>
@@ -211,7 +211,11 @@ const ProductScreen = () => {
                       </Form.Group>
                       <Button
                         type="submit"
-                        disabled={loadingProductReview}
+                        disabled={
+                          loadingProductReview ||
+                          rating === 0 ||
+                          comment.trim() === ""
+                        }
                         variant="primary"
                       >
                         Submit

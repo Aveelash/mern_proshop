@@ -19,13 +19,13 @@ const CartScreen = () => {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
-  const { cartItems } = cart;
+  const cartItems = cart?.cartItems || [];
 
-  const addToCartHandler = async (product, qty) => {
+  const addToCartHandler = (product, qty) => {
     dispatch(addToCart({ ...product, qty }));
   };
 
-  const removeFromCartHandler = async (id) => {
+  const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
   };
 
@@ -45,7 +45,7 @@ const CartScreen = () => {
           <ListGroup variant="flush">
             {cartItems.map((item) => (
               <ListGroup.Item key={item._id}>
-                <Row>
+                <Row className="align-items-center">
                   <Col md={2}>
                     <Image src={item.image} alt={item.name} fluid rounded />
                   </Col>
@@ -99,7 +99,7 @@ const CartScreen = () => {
             <ListGroup.Item>
               <Button
                 type="button"
-                className="btn-block"
+                className="w-100"
                 disabled={cartItems.length === 0}
                 onClick={checkoutHandler}
               >

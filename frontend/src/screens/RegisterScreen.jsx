@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,7 +60,9 @@ const RegisterScreen = () => {
             placeholder="Enter name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-          ></Form.Control>
+            required
+            autoComplete="name"
+          />
         </Form.Group>
 
         <Form.Group controlId="email" className="my-3">
@@ -71,8 +72,11 @@ const RegisterScreen = () => {
             placeholder="Enter email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
+            required
+            autoComplete="email"
+          />
         </Form.Group>
+
         <Form.Group controlId="password" className="my-3">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -80,8 +84,11 @@ const RegisterScreen = () => {
             placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
+            required
+            autoComplete="new-password"
+          />
         </Form.Group>
+
         <Form.Group controlId="confirmPassword" className="my-3">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
@@ -89,7 +96,9 @@ const RegisterScreen = () => {
             placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-          ></Form.Control>
+            required
+            autoComplete="new-password"
+          />
         </Form.Group>
 
         <Button

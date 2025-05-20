@@ -39,12 +39,12 @@ const UserEditScreen = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
-      await updateUser({ userId, name, email, isAdmin });
-      toast.success("User updated Successfully");
+      await updateUser({ userId, name, email, isAdmin }).unwrap();
+      toast.success("User updated successfully");
       refetch();
       navigate("/admin/userlist");
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err.error || "Failed to update user");
     }
   };
 
@@ -60,7 +60,7 @@ const UserEditScreen = () => {
           <Loader />
         ) : error ? (
           <Message variant="danger">
-            {error?.data?.message || error.error}
+            {error?.data?.message || error.error || "Failed to load user"}
           </Message>
         ) : (
           <Form onSubmit={submitHandler}>
@@ -90,10 +90,15 @@ const UserEditScreen = () => {
                 label="Is Admin"
                 checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
-              ></Form.Check>
+              />
             </Form.Group>
 
-            <Button type="submit" variant="primary" className="my-2">
+            <Button
+              type="submit"
+              variant="primary"
+              className="my-2"
+              disabled={loadingUpdate}
+            >
               Update
             </Button>
           </Form>

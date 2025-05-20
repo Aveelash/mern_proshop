@@ -50,19 +50,24 @@ const ProductEditScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    const result = await updateProduct({
+
+    const updatedProduct = {
       productId,
       name,
-      price,
+      price: Number(price),
       image,
       brand,
       category,
-      countInStock,
+      countInStock: Number(countInStock),
       description,
-    });
+    };
+
+    const result = await updateProduct(updatedProduct);
 
     if (result.error) {
-      toast.error(result.error);
+      toast.error(
+        result.error.data?.message || result.error.message || "Update failed"
+      );
     } else {
       toast.success("Product updated");
       navigate("/admin/productlist");

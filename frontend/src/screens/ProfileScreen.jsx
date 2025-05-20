@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -31,12 +30,12 @@ const ProfileScreen = () => {
       setName(userInfo.name);
       setEmail(userInfo.email);
     }
-  }, [userInfo, userInfo.name, userInfo.email]);
+  }, [userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error("Password do not match");
+      toast.error("Passwords do not match");
     } else {
       try {
         const res = await updateProfile({
@@ -47,6 +46,8 @@ const ProfileScreen = () => {
         }).unwrap();
         dispatch(setCredentials(res));
         toast.success("Profile updated Successfully");
+        setPassword("");
+        setConfirmPassword("");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -99,7 +100,12 @@ const ProfileScreen = () => {
             ></Form.Control>
           </Form.Group>
 
-          <Button type="submit" variant="primary" className="my-2">
+          <Button
+            type="submit"
+            variant="primary"
+            className="my-2"
+            disabled={loadingUpdateProfile}
+          >
             Update
           </Button>
           {loadingUpdateProfile && <Loader />}
@@ -122,6 +128,7 @@ const ProfileScreen = () => {
                 <th>TOTAL</th>
                 <th>PAID</th>
                 <th>DELIVERED</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -134,14 +141,14 @@ const ProfileScreen = () => {
                     {order.isPaid ? (
                       order.paidAt.substring(0, 10)
                     ) : (
-                      <FaTimes style={{ color: "red" }} />
+                      <FaTimes style={{ color: "red" }} title="Not Paid" />
                     )}
                   </td>
                   <td>
                     {order.isDelivered ? (
                       order.deliveredAt.substring(0, 10)
                     ) : (
-                      <FaTimes style={{ color: "red" }} />
+                      <FaTimes style={{ color: "red" }} title="Not Delivered" />
                     )}
                   </td>
                   <td>

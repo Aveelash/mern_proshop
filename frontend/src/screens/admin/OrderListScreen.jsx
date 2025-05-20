@@ -8,7 +8,6 @@ import { useGetOrdersQuery } from "../../slices/ordersApiSlice";
 
 const OrderListScreen = () => {
   const { data: orders, isLoading, error } = useGetOrdersQuery();
-  console.log(orders);
 
   return (
     <>
@@ -16,7 +15,9 @@ const OrderListScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error}</Message>
+        <Message variant="danger">
+          {error?.data?.message || error.error || "Something went wrong"}
+        </Message>
       ) : (
         <Table striped hover responsive className="table-sm">
           <thead>
@@ -27,27 +28,31 @@ const OrderListScreen = () => {
               <th>TOTAL</th>
               <th>PAID</th>
               <th>DELIVERED</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => (
               <tr key={order._id}>
                 <td>{order._id}</td>
-                <td>{order.user && order.user.name}</td>
+                <td>{order.user?.name}</td>
                 <td>{order.createdAt.substring(0, 10)}</td>
-                <td>${order.totalPrice}</td>
+                <td>${order.totalPrice.toFixed(2)}</td>
                 <td>
                   {order.isPaid ? (
                     order.paidAt.substring(0, 10)
                   ) : (
-                    <FaTimes style={{ color: "red" }} />
+                    <FaTimes style={{ color: "red" }} aria-label="Not paid" />
                   )}
                 </td>
                 <td>
                   {order.isDelivered ? (
                     order.deliveredAt.substring(0, 10)
                   ) : (
-                    <FaTimes style={{ color: "red" }} />
+                    <FaTimes
+                      style={{ color: "red" }}
+                      aria-label="Not delivered"
+                    />
                   )}
                 </td>
                 <td>

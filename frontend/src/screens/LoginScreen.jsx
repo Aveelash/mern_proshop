@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +36,7 @@ const LoginScreen = () => {
       dispatch(setCredentials({ ...res }));
       navigate(redirect);
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err?.error || "Login failed");
     }
   };
 
@@ -52,17 +51,24 @@ const LoginScreen = () => {
             type="email"
             placeholder="Enter email"
             value={email}
+            autoComplete="email"
+            aria-label="Email address"
             onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
+            required
+          />
         </Form.Group>
+
         <Form.Group controlId="password" className="my-3">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
             placeholder="Enter password"
             value={password}
+            autoComplete="current-password"
+            aria-label="Password"
             onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
+            required
+          />
         </Form.Group>
 
         <Button

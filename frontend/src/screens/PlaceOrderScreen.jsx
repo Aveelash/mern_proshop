@@ -38,7 +38,7 @@ const PlaceOrderScreen = () => {
       dispatch(clearCartItems());
       navigate(`/order/${res._id}`);
     } catch (error) {
-      toast.error(error);
+      toast.error(error?.data?.message || error.message || error.toString());
     }
   };
 
@@ -51,16 +51,15 @@ const PlaceOrderScreen = () => {
             <ListGroup.Item>
               <h2>Shipping</h2>
               <p>
-                <strong>Address:</strong>
-                {cart.shippingAddress.address}, {cart.shippingAddress.city}{" "}
-                {cart.shippingAddress.postalCode},{" "}
+                <strong>Address:</strong> {cart.shippingAddress.address},{" "}
+                {cart.shippingAddress.city} {cart.shippingAddress.postalCode},{" "}
                 {cart.shippingAddress.country}
               </p>
             </ListGroup.Item>
 
             <ListGroup.Item>
               <h2>Payment Method</h2>
-              <strong>Method:</strong>
+              <strong>Method: </strong>
               {cart.paymentMethod}
             </ListGroup.Item>
 
@@ -82,7 +81,7 @@ const PlaceOrderScreen = () => {
                           />
                         </Col>
                         <Col>
-                          <Link to={`/products/${item.product}`}>
+                          <Link to={`/product/${item.product}`}>
                             {item.name}
                           </Link>
                         </Col>
@@ -97,12 +96,14 @@ const PlaceOrderScreen = () => {
             </ListGroup.Item>
           </ListGroup>
         </Col>
+
         <Col md={4}>
           <Card>
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h2>Order Summary</h2>
               </ListGroup.Item>
+
               <ListGroup.Item>
                 <Row>
                   <Col>Items:</Col>
@@ -132,13 +133,17 @@ const PlaceOrderScreen = () => {
               </ListGroup.Item>
 
               <ListGroup.Item>
-                {error && <Message variant="danger">{error}</Message>}
+                {error && (
+                  <Message variant="danger">
+                    {error?.data?.message || error.error || error.toString()}
+                  </Message>
+                )}
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Button
                   type="button"
-                  className="btn-block"
+                  className="d-block w-100"
                   disabled={cart.cartItems.length === 0}
                   onClick={placeOrderHandler}
                 >

@@ -27,6 +27,22 @@ const UserListScreen = () => {
     }
   };
 
+  // Helper function to safely get error message string
+  const getErrorMessage = (error) => {
+    if (!error) return null;
+    if (typeof error === "string") return error;
+    if (error.data && typeof error.data.message === "string")
+      return error.data.message;
+    if (typeof error.message === "string") return error.message;
+    if (typeof error.error === "string") return error.error;
+    // fallback: convert object to string
+    try {
+      return JSON.stringify(error);
+    } catch {
+      return "An unknown error occurred";
+    }
+  };
+
   return (
     <>
       <h1>Users</h1>
@@ -35,10 +51,7 @@ const UserListScreen = () => {
         <Loader />
       ) : error ? (
         <Message variant="danger">
-          {error?.data?.message ||
-            error?.error ||
-            error?.message ||
-            "Something went wrong"}
+          {getErrorMessage(error) || "Something went wrong"}
         </Message>
       ) : (
         <Table striped hover responsive className="table-sm">
@@ -48,7 +61,7 @@ const UserListScreen = () => {
               <th>NAME</th>
               <th>EMAIL</th>
               <th>ADMIN</th>
-              <th>ACTIONS</th> {/* ✅ Added actions column */}
+              <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody>

@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +22,14 @@ const ShippingScreen = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(saveShippingAddress({ address, city, postalCode, country }));
+    dispatch(
+      saveShippingAddress({
+        address: address.trim(),
+        city: city.trim(),
+        postalCode: postalCode.trim(),
+        country: country.trim(),
+      })
+    );
     navigate("/payment");
   };
 
@@ -39,7 +45,9 @@ const ShippingScreen = () => {
             placeholder="Enter address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-          ></Form.Control>
+            required
+            autoComplete="address-line1"
+          />
         </Form.Group>
         <Form.Group controlId="city" className="my-2">
           <Form.Label>City</Form.Label>
@@ -48,7 +56,9 @@ const ShippingScreen = () => {
             placeholder="Enter city"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-          ></Form.Control>
+            required
+            autoComplete="address-level2"
+          />
         </Form.Group>
         <Form.Group controlId="postalCode" className="my-2">
           <Form.Label>Postal Code</Form.Label>
@@ -57,7 +67,9 @@ const ShippingScreen = () => {
             placeholder="Enter postal Code"
             value={postalCode}
             onChange={(e) => setPostalCode(e.target.value)}
-          ></Form.Control>
+            required
+            autoComplete="postal-code"
+          />
         </Form.Group>
         <Form.Group controlId="country" className="my-2">
           <Form.Label>Country</Form.Label>
@@ -66,10 +78,17 @@ const ShippingScreen = () => {
             placeholder="Enter country"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-          ></Form.Control>
+            required
+            autoComplete="country"
+          />
         </Form.Group>
 
-        <Button type="submit" variant="primary" className="my-2">
+        <Button
+          type="submit"
+          variant="primary"
+          className="my-2"
+          disabled={!address || !city || !postalCode || !country}
+        >
           Continue
         </Button>
       </Form>

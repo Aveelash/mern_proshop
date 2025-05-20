@@ -9,14 +9,15 @@ import ProductCarousel from "../components/ProductCarousel";
 import { useGetProductsQuery } from "../slices/productsApiSlice";
 
 const HomeScreen = () => {
-  // Default pageNumber to 1 if not provided
   const { pageNumber = 1, keyword } = useParams();
 
-  // Fetch products with pagination
   const { data, isLoading, error } = useGetProductsQuery({
     keyword,
     pageNumber,
   });
+
+  // Debugging: see what 'data' looks like in console
+  console.log("Fetched data:", data);
 
   return (
     <>
@@ -27,6 +28,7 @@ const HomeScreen = () => {
           Go back
         </Link>
       )}
+
       {isLoading ? (
         <Loader />
       ) : error ? (
@@ -37,7 +39,7 @@ const HomeScreen = () => {
               error?.error ||
               "An unexpected error occurred"}
         </Message>
-      ) : (
+      ) : data && data.products && data.products.length > 0 ? (
         <>
           <h1>Latest Products</h1>
           <Row>
@@ -53,6 +55,8 @@ const HomeScreen = () => {
             keyword={keyword ? keyword : ""}
           />
         </>
+      ) : (
+        <Message variant="info">No products found</Message>
       )}
     </>
   );
