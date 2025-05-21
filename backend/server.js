@@ -34,13 +34,7 @@ app.get("/api/config/paypal", (req, res) =>
 const __dirname = path.resolve(); //set _dirname to current directory
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/frontend/build")));
-
-  app.get(/.*/, (req, res) =>
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
-  );
-} else {
+if (process.env.NODE_ENV !== "production") {
   app.get("/", (req, res) => {
     res.send("API is running...");
   });
@@ -49,4 +43,8 @@ if (process.env.NODE_ENV === "production") {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+app.listen(port, "0.0.0.0", () =>
+  console.log(
+    `Server running on http://0.0.0.0:${port} in ${process.env.NODE_ENV} mode`
+  )
+);

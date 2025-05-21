@@ -1,0 +1,67 @@
+# your-root-directory/docker-compose.yml
+
+# Specify the Docker Compose file format version.
+version: "3.8"
+
+# Define the services (containers) that make up your application.
+services:
+  # Nginx service: Acts as the reverse proxy and static file server.
+  nginx:
+    # Use the official Nginx Alpine image for a smaller footprint.
+    image: nginx:alpine
+    # Assign a custom name to the container for easy identification.
+    container_name: mern_nginx
+    # Port mapping: Map host port 80 to container port 80.
+    # This means you can access your application via http://localhost in your browser.
+    ports:
+      - "80:80"
+    # Volume mounts: Link directories/files from your host to the container.
+    volumes:
+      # Mount your custom Nginx configuration file into the container.
+      # ':ro' means read-only, preventing accidental modifications from within the container.
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Mount your React frontend's 'build' directory into Nginx's default HTML serving directory.
+      # This ensures Nginx serves your compiled frontend. ':ro' for read-only.
+      - ./frontend/build:/usr/share/nginx/html:ro
+    # Dependency: Nginx should start only after the backend service is up.
+    depends_on:
+      - backend
+    # Connect this service to our custom network.
+    networks:
+      - mern_network
+
+  # Backend service: Your Node.js Express application.
+  backend:
+    # IMPORTANT CHANGE FOR ROOT PACKAGE.JSON:
+    # Build the Docker image for this service by setting the build context
+    # to the root directory (where package.json is located).
+    build:
+      context: . # This tells Docker to use the current directory (proshop) as the build context.
+      dockerfile: ./backend/Dockerfile # This tells Docker where to find the Dockerfile for this service.
+    # Assign a custom name to the container.
+    container_name: mern_backend
+    # Port mapping: Map host port 5000 to container port 5000.
+    # This is primarily for direct access/debugging your backend if needed,
+    # but Nginx will communicate with it internally via the Docker network.
+    ports:
+      - "5000:5000"
+    # Environment variables for your backend container.
+    # Docker Compose will automatically look for a .env file in the same directory
+    # as this docker-compose.yml file and substitute values.
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGO_URI: ${MONGO_URI} # This will come from your root .env file
+      JWT_SECRET: ${JWT_SECRET} # This will come from your root .env file
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID} # Added based on server.js
+      # Add any other production environment variables your backend needs here.
+    # Connect this service to our custom network.
+    networks:
+      - mern_network
+
+# Define a custom network for your services.
+# This allows containers to communicate with each other using their service names
+# (e.g., 'nginx' can resolve 'backend' to the backend container's IP).
+networks:
+  mern_network:
+    driver: bridge # Use the default bridge network driver.
