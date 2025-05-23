@@ -17,7 +17,7 @@ connectDB(); //Connect to MongoDB
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:3000", // Change this to your frontend URL
+  origin: "http://13.201.13.231", // Change this to your frontend URL
   credentials: true, // <-- Allow cookies to be sent from frontend
 };
 
