@@ -1,5 +1,6 @@
 import path from "path";
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 dotenv.config();
@@ -14,6 +15,13 @@ const port = process.env.PORT || 5000;
 connectDB(); //Connect to MongoDB
 
 const app = express();
+
+const corsOptions = {
+  origin: "http://localhost:3000", // Change this to your frontend URL
+  credentials: true, // <-- Allow cookies to be sent from frontend
+};
+
+app.use(cors(corsOptions));
 
 // Body Parser middleware
 app.use(express.json());
